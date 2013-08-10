@@ -4,10 +4,10 @@
 *
 * Several consecutive failed logins will ban the IP address for 30 minutes.
 *
-* @version 1.0
+* @version 1.1
 * @author Arthur Hoaro <http://hoa.ro>
 * @url http://git.hoa.ro/arthur/rc-plugin-bruteforce-breaker/tree/master/
-* @license GPLv3
+* @license MIT
 */
 class bruteforcebreaker extends rcube_plugin {
     private $rc;
@@ -36,9 +36,12 @@ class bruteforcebreaker extends rcube_plugin {
 
     // Signal a failed login. Will ban the IP if too many failures:
     function ban_loginFailed($args) {
-        $this->load_ipban();
         $ip = $_SERVER['REMOTE_ADDR']; 
-
+        if ( $this->isWhitelisted($ip) )
+            return $args;
+            
+        $this->load_ipban();
+            
         if (!isset($this->data_ban['FAILURES'][$ip])) 
           $this->data_ban['FAILURES'][$ip] = 0;
         $this->data_ban['FAILURES'][$ip]++;
@@ -57,8 +60,9 @@ class bruteforcebreaker extends rcube_plugin {
 
     // Signals a successful login. Resets failed login counter.
     function ban_loginOk($args) {
+        $ip = $_SERVER['REMOTE_ADDR'];            
         $this->load_ipban();
-        $ip = $_SERVER['REMOTE_ADDR'];
+        
         unset($this->data_ban['FAILURES'][$ip]); 
         unset($this->data_ban['BANS'][$ip]);
         
@@ -70,8 +74,11 @@ class bruteforcebreaker extends rcube_plugin {
 
     // Checks if the user CAN login. If 'true', the user can try to login.
     function ban_canLogin($args) {
-        $this->load_ipban();
         $ip=$_SERVER["REMOTE_ADDR"]; 
+        if ( $this->isWhitelisted($ip) )
+            return $args;
+        
+        $this->load_ipban();
 
         if (!empty($this->data_ban['BANS'][$ip]) ) {
             if( $this->data_ban['BANS'][$ip]<=time()) {             
@@ -86,6 +93,10 @@ class bruteforcebreaker extends rcube_plugin {
         }      
         
         return $args; 
+    }
+    
+    function isWhitelisted($ip) {
+        return in_array($ip, $this->rc->config->get('bruteforcebreaker_whitelist', array()));
     }
 }
 

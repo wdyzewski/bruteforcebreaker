@@ -27,8 +27,18 @@ You can override default settings by copying `config.inc.php.dist` into `config.
  * nb_attemps: Number of login attemps before ban
  * duration: Ban duration in seconds
 
+## Changelog
+
+### 1.1
+
+Whitelist added in config file.
+
+### 1.0
+
+Initial commit.
+
 ## License
 
-This software is distributed under [the MIT license](http://git.hoa.ro/arthur/rc-plugin-bruteforce-breaker/blob/master/) by Arthur Hoaro.
+This software is distributed under [the MIT license](http://git.hoa.ro/arthur/rc-plugin-bruteforce-breaker/blob/master/LICENSE.md) by Arthur Hoaro.
 
 Thanks to [SebSauvage](https://github.com/sebsauvage/) for the inspiration.
