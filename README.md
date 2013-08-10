@@ -26,6 +26,7 @@ You can override default settings by copying `config.inc.php.dist` into `config.
  * keep_trace: Log login attemps.
  * nb_attemps: Number of login attemps before ban
  * duration: Ban duration in seconds
+ * whitelist: An array of whitelist IP (they can't be banned)
 
 ## Changelog
 
