@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Keep log of BruteforceBreaker
+ * default: true
+ **/
+$rcmail_config['bruteforcebreaker_keep_trace'] = true;
+
+/**
+ * Number of login attemps before ban
+ * default: 5
+ **/
+$rcmail_config['bruteforcebreaker_nb_attemps'] = 5;
+
+/**
+ * Ban duration in seconds
+ * default: 1800 (30min)
+ **/
+$rcmail_config['bruteforcebreaker_duration'] = 1800;
+
+?>
