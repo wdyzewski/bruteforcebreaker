@@ -24,7 +24,8 @@ class bruteforcebreaker extends rcube_plugin {
     }
 
     function load_ipban() {
-        $this->load_config();
+        $this->load_config('config.inc.php.dist');
+        $this->load_config('config.inc.php');
         if (!is_file($this->ipbans_file)) $this->write_ipban();
         include $this->ipbans_file;
     }
@@ -41,12 +42,12 @@ class bruteforcebreaker extends rcube_plugin {
         if (!isset($this->data_ban['FAILURES'][$ip])) 
           $this->data_ban['FAILURES'][$ip] = 0;
         $this->data_ban['FAILURES'][$ip]++;
-        if ($this->rc->config->get('bruteforcebreaker_keep_trace')) 
+        if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
             write_log('bruteforcebreaker', sprintf("Login failed for %s. Number of attemps: %d.\n", $ip, $this->data_ban['FAILURES'][$ip]));
          
-        if ($this->data_ban['FAILURES'][$ip] > ($this->rc->config->get('bruteforcebreaker_nb_attemps') -1 )) {
-            $this->data_ban['BANS'][$ip] = time() + $this->rc->config->get('bruteforcebreaker_duration');
-            if ($this->rc->config->get('bruteforcebreaker_keep_trace')) 
+        if ($this->data_ban['FAILURES'][$ip] > ($this->rc->config->get('bruteforcebreaker_nb_attemps', 5) -1 )) {
+            $this->data_ban['BANS'][$ip] = time() + $this->rc->config->get('bruteforcebreaker_duration', 1800);
+            if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
                 write_log('bruteforcebreaker', sprintf("IP address banned from login - too many attemps (%s)\n", $ip));
         }
 
@@ -62,7 +63,7 @@ class bruteforcebreaker extends rcube_plugin {
         unset($this->data_ban['BANS'][$ip]);
         
         $this->write_ipban();
-        if ($this->rc->config->get('bruteforcebreaker_keep_trace')) 
+        if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
             write_log('bruteforcebreaker', sprintf("Login ok for %s.\n", $ip));
         return $args;
     }
@@ -78,7 +79,7 @@ class bruteforcebreaker extends rcube_plugin {
                 unset($this->data_ban['BANS'][$ip]);
                 
                 $this->write_ipban();
-                if ($this->rc->config->get('bruteforcebreaker_keep_trace')) 
+                if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
                     write_log('bruteforcebreaker', sprintf("Ban lifted for %s.\n", $ip));
             }
             else $args['pass'] = '';
