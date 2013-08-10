@@ -96,6 +96,7 @@ class bruteforcebreaker extends rcube_plugin {
     }
     
     function isWhitelisted($ip) {
+        $this->load_ipban();
         return in_array($ip, $this->rc->config->get('bruteforcebreaker_whitelist', array()));
     }
 }
