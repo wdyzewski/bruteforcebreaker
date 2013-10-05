@@ -19,6 +19,8 @@ $rcmail_config['plugins'] = array('bruteforcebreaker');
 ```
  * It's already working ! :)
 
+> Note: Make sure that your plugin directory is writable (`chmod 755 plugins/bruteforcebreaker`).
+
 ## Configuration
 
 You can override default settings by copying `config.inc.php.dist` into `config.inc.php`.
