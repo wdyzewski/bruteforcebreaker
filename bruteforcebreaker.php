@@ -37,8 +37,10 @@ class bruteforcebreaker extends rcube_plugin {
     // Signal a failed login. Will ban the IP if too many failures:
     function ban_loginFailed($args) {
         $ip = $_SERVER['REMOTE_ADDR']; 
-        if ( $this->isWhitelisted($ip) )
+        if ( $this->isWhitelisted($ip) ) {
+            write_log('bruteforcebreaker', sprintf("Whitelist login for %s.", $ip));
             return $args;
+        }
             
         $this->load_ipban();
             
@@ -46,12 +48,12 @@ class bruteforcebreaker extends rcube_plugin {
           $this->data_ban['FAILURES'][$ip] = 0;
         $this->data_ban['FAILURES'][$ip]++;
         if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
-            write_log('bruteforcebreaker', sprintf("Login failed for %s. Number of attemps: %d.\n", $ip, $this->data_ban['FAILURES'][$ip]));
+            write_log('bruteforcebreaker', sprintf("Login failed for %s. Number of attemps: %d.", $ip, $this->data_ban['FAILURES'][$ip]));
          
         if ($this->data_ban['FAILURES'][$ip] > ($this->rc->config->get('bruteforcebreaker_nb_attemps', 5) -1 )) {
             $this->data_ban['BANS'][$ip] = time() + $this->rc->config->get('bruteforcebreaker_duration', 1800);
             if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
-                write_log('bruteforcebreaker', sprintf("IP address banned from login - too many attemps (%s)\n", $ip));
+                write_log('bruteforcebreaker', sprintf("IP address banned from login - too many attemps (%s).", $ip));
         }
 
         $this->write_ipban();
