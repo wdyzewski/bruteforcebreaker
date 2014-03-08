@@ -4,7 +4,7 @@
 *
 * Several consecutive failed logins will ban the IP address for 30 minutes.
 *
-* @version 1.1
+* @version 1.2
 * @author Arthur Hoaro <http://hoa.ro>
 * @url http://git.hoa.ro/arthur/rc-plugin-bruteforce-breaker/tree/master/
 * @license MIT
@@ -97,7 +97,21 @@ class bruteforcebreaker extends rcube_plugin {
     
     function isWhitelisted($ip) {
         $this->load_ipban();
-        return in_array($ip, $this->rc->config->get('bruteforcebreaker_whitelist', array()));
+        $ip = ip2long($ip);
+        $whitelist = $this->rc->config->get('bruteforcebreaker_whitelist', array());
+
+        foreach($whitelist as $whiteIp) {
+            $ipStart = str_replace('*', '0', $whiteIp);
+            $ipEnd = str_replace('*', '255', $whiteIp);
+
+            $ipStart = ip2long($ipStart);
+            $ipEnd = ip2long($ipEnd);
+
+            if($ip >= $ipStart && $ip <= $ipEnd){
+                return true;
+            }
+        }
+        return false;
     }
 }
 

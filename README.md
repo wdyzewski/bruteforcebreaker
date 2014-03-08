@@ -30,7 +30,15 @@ You can override default settings by copying `config.inc.php.dist` into `config.
  * duration: Ban duration in seconds
  * whitelist: An array of whitelist IP (they can't be banned)
 
+You can use wildcards in your whitelist array (such as: `192.168.0.*`).
+
+> Warning: This kind of wildcards won't work => 192.168.0.1*
+
 ## Changelog
+
+### 1.2
+
+Whitelist now handle wildcard IP.
 
 ### 1.1
 
