@@ -38,7 +38,7 @@ class bruteforcebreaker extends rcube_plugin {
     function ban_loginFailed($args) {
         $ip = $_SERVER['REMOTE_ADDR']; 
         if ( $this->isWhitelisted($ip) ) {
-            write_log('bruteforcebreaker', sprintf("Whitelist login for %s.", $ip));
+            rcube::write_log('bruteforcebreaker', sprintf("Whitelist login for %s.", $ip));
             return $args;
         }
             
@@ -48,12 +48,12 @@ class bruteforcebreaker extends rcube_plugin {
           $this->data_ban['FAILURES'][$ip] = 0;
         $this->data_ban['FAILURES'][$ip]++;
         if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
-            write_log('bruteforcebreaker', sprintf("Login failed for %s. Number of attemps: %d.", $ip, $this->data_ban['FAILURES'][$ip]));
+            rcube::write_log('bruteforcebreaker', sprintf("Login failed for %s. Number of attemps: %d.", $ip, $this->data_ban['FAILURES'][$ip]));
          
         if ($this->data_ban['FAILURES'][$ip] > ($this->rc->config->get('bruteforcebreaker_nb_attemps', 5) -1 )) {
             $this->data_ban['BANS'][$ip] = time() + $this->rc->config->get('bruteforcebreaker_duration', 1800);
             if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
-                write_log('bruteforcebreaker', sprintf("IP address banned from login - too many attemps (%s).", $ip));
+                rcube::write_log('bruteforcebreaker', sprintf("IP address banned from login - too many attemps (%s).", $ip));
         }
 
         $this->write_ipban();
@@ -70,7 +70,7 @@ class bruteforcebreaker extends rcube_plugin {
         
         $this->write_ipban();
         if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
-            write_log('bruteforcebreaker', sprintf("Login ok for %s.\n", $ip));
+            rcube::write_log('bruteforcebreaker', sprintf("Login ok for %s.\n", $ip));
         return $args;
     }
 
@@ -89,7 +89,7 @@ class bruteforcebreaker extends rcube_plugin {
                 
                 $this->write_ipban();
                 if ($this->rc->config->get('bruteforcebreaker_keep_trace', true)) 
-                    write_log('bruteforcebreaker', sprintf("Ban lifted for %s.\n", $ip));
+                    rcube::write_log('bruteforcebreaker', sprintf("Ban lifted for %s.\n", $ip));
             }
             else $args['pass'] = '';
         }      
